@@ -41,20 +41,7 @@ class BeerController extends AbstractController
     {
 
         $search = $request->get('txt_food');
-        $url = 'https://api.punkapi.com/v2/beers?food='.$search;
-
-        $response = $this->client->request(
-            'GET',
-            $url
-        );
-
-        $statusCode = $response->getStatusCode();
-        $content = $response->getContent();
-
-        if ($statusCode === 200) {
-            $response = json_decode($content, true);
-            $beers = $response;
-        }
+        $beers = $this->callApi('beers?food='.$search);
 
         return $this->render('beer/index.html.twig', [
             'beers' => $beers ?? [],
@@ -67,7 +54,20 @@ class BeerController extends AbstractController
     public function getBeer(Request $request): Response
     {
         $search = $request->get('txt_id');
-        $url = 'https://api.punkapi.com/v2/beers/'.$search;
+        $beers = $this->callApi('beers/'.$search);
+
+        return $this->render('beer/index.html.twig', [
+            'beers' => $beers ?? [],
+        ]);
+    }
+
+
+
+    public function callApi($urlParam)
+    {
+
+        $urlBase = 'https://api.punkapi.com/v2/';
+        $url = $urlBase."".$urlParam;
 
         $response = $this->client->request(
             'GET',
@@ -79,11 +79,9 @@ class BeerController extends AbstractController
 
         if ($statusCode === 200) {
             $response = json_decode($content, true);
-            $beers = $response;
         }
 
-        return $this->render('beer/index.html.twig', [
-            'beers' => $beers ?? [],
-        ]);
+        return $response;
+
     }
 }

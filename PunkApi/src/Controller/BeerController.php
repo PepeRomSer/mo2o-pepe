@@ -41,11 +41,22 @@ class BeerController extends AbstractController
     {
 
         $search = $request->get('txt_food');
-        $beers = $this->callApi('beers?food='.$search);
-
-        return $this->render('beer/index.html.twig', [
-            'beers' => $beers ?? [],
-        ]);
+        if($search == "")
+        {
+            return $this->render('beer/index.html.twig', [
+                'beers' => [],
+                'msg' => "Campo FOOD vacio. Introduzca termino a buscar."
+            ]);
+        }
+        else
+        {
+            $beers = $this->callApi('beers?food='.$search);
+            return $this->render('beer/index.html.twig', [
+                'beers' => $beers ?? [],
+                'msg' => ""
+            ]);
+        }
+        
     }
 
     /**
@@ -58,6 +69,7 @@ class BeerController extends AbstractController
 
         return $this->render('beer/index.html.twig', [
             'beers' => $beers ?? [],
+            'msg' => ""
         ]);
     }
 
